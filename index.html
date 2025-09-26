@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>E-LEDGER KAKINADA</title>
+<style>
+  /* Put your full CSS styles here (from original HTML) */
+  body {
+    margin:0;
+    min-height:100vh;
+    font-family: Arial, sans-serif;
+    animation: gradientBG 18s ease infinite;
+    background: linear-gradient(120deg, #43e97b 0%, #38f9d7 100%);
+    background-size: 400% 400%;
+  }
+  @keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  .container {
+    max-width: 1100px;
+    margin: 45px auto;
+    background: rgba(255,255,255,0.98);
+    border-radius: 18px;
+    box-shadow: 0 10px 48px 0 #1c50a322;
+    padding: 36px 30px 30px 30px;
+  }
+  h1,h2 {
+    text-align:center;
+    color:#1b336a;
+    letter-spacing:2px;
+    margin-bottom:0.2em;
+  }
+  h2 {
+    color:#4f8cff;
+    font-size:1.2em;
+    margin-bottom:1.4em;
+    margin-top:0;
+  }
+  .row {
+    display:flex;
+    gap:15px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    position:relative;
+  }
+  input,select,textarea {
+    flex:1;
+    padding:10px;
+    border:1px solid #b3d0ed;
+    border-radius:5px;
+    background:#f6faff;
+    font-size:1em;
+    resize:vertical;
+  }
+  .suggestions {
+    position:absolute;
+    left:0;right:0;top:44px;
+    background:#fff;
+    border:1px solid #b3d0ed;
+    z-index:99;
+    border-top:none;
+    max-height:200px;
+    overflow-y:auto;
+  }
+  .suggestion {
+    padding:9px 12px;
+    cursor:pointer;
+    border-bottom:1px solid #eef2fa;
+  }
+  .suggestion:last-child {
+    border-bottom:none;
+  }
+  .suggestion:hover {
+    background:#eaf8ff;
+  }
+  .item-table {
+    margin-top:25px;
+  }
+  table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:6px;
+  }
+  th,td {
+    padding:10px 7px;
+    text-align:left;
+    vertical-align:middle;
+  }
+  th {
+    background:#9ad3fb;
+    color:#1b336a;
+  }
+  tr:nth-child(even) {
+    background:#f4f9fe;
+  }
+  .editable,.editable-name-input {
+    background:#fff9db;
+    border:1px solid #ffb84c;
+    border-radius:4px;
+    padding:5px 6px;
+    font-family:inherit;
+    font-size:1em;
+  }
+  .editable-name-input {
+    width:90%;
+  }
+  .textarea-editable {
+    background:#fff9db;
+    border:1px solid #ffb84c;
+    border-radius:4px;
+    padding:6px;
+    min-height:65px;
+    font-size:0.95em;
+    font-family:Arial, sans-serif;
+    width:100%;
+    box-sizing:border-box;
+    resize:vertical;
+  }
+  .save-btn, .download-btn, .delete-btn, .edit-name-btn, .save-name-btn {
+    cursor:pointer;
+    border:none;
+    border-radius:5px;
+    padding:6px 16px;
+    margin:6px 4px 6px 0;
+    font-weight:bold;
+    font-size:1em;
+    transition:background 0.18s;
+  }
+  .save-btn, .download-btn {
+    background:#43e97b;
+    color:#222;
+  }
+  .save-btn:hover, .download-btn:hover, .save-name-btn:hover, .edit-name-btn:hover {
+    background:#38f9d7;
+  }
+  .delete-btn {
+    background:#e35b5b;
+    color:#fff;
+  }
+  .delete-btn:hover {
+    background:#c94b4b;
+  }
+  .history-title {
+    font-weight:bold;
+    margin-top:15px;
+    margin-bottom:8px;
+  }
+  .history-table {
+    width:100%;
+    font-size:0.9em;
+    border-collapse:collapse;
+    margin-top:15px;
+  }
+  .history-table th, .history-table td {
+    border:1px solid #b3d0ed;
+    padding:8px 6px;
+    vertical-align:middle;
+    text-align:center;
+  }
+  .history-delete {
+    cursor:pointer;
+    border:none;
+    border-radius:4px;
+    padding:2px 6px;
+    font-weight:bold;
+    background:#e35b5b;
+    color:white;
+  }
+  .history-delete:hover {
+    background:#c94b4b;
+  }
+  .history-remark-edit {
+    width:90%;
+    max-width:220px;
+    height:40px;
+    padding:3px 5px;
+    resize:vertical;
+    font-family:Arial, sans-serif;
+    font-size:0.95em;
+  }
+  .received {
+    color: #2d862d; /* light green */
+    font-weight: bold;
+  }
+  .sent {
+    color: #cc4c4c; /* light red */
+    font-weight: bold;
+  }
+  @media (max-width: 600px) {
+    .container {
+      padding: 20px 15px 20px 15px;
+    }
+    .row {
+      flex-direction: column;
+    }
+    input, select, textarea {
+      flex: unset;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .button-row {
+      text-align: center;
+    }
+    .save-btn, .download-btn, .delete-btn, .edit-name-btn, .save-name-btn {
+      width: 90%;
+      margin: 0 auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+</style>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/shim.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1>E-LEDGER KAKINADA</h1>
+  <h2>VOLUME-II</h2>
+  <div class="row">
+    <input type="text" id="searchBar" placeholder="Search stock item..." />
+    <div id="suggestions" class="suggestions" style="display:none;"></div>
+    <select id="dropdown"><option value="">Select stock item...</option></select>
+  </div>
+  <div class="item-table" id="itemTable"></div>
+  <div class="button-row" style="margin-bottom: 25px;">
+    <button class="download-btn" id="downloadBtn">Download Excel File</button>
+  </div>
+</div>
+
+<!-- Link to external JS file -->
+<script src="script.js"></script>
+</body>
+</html>
