@@ -3,234 +3,744 @@
 <head>
 <meta charset="UTF-8"/>
 <title>E-LEDGER KAKINADA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
-  /* Put your full CSS styles here (from original HTML) */
-  body {
-    margin:0;
-    min-height:100vh;
-    font-family: Arial, sans-serif;
-    animation: gradientBG 18s ease infinite;
-    background: linear-gradient(120deg, #43e97b 0%, #38f9d7 100%);
-    background-size: 400% 400%;
+  body {margin:0;min-height:100vh;background:linear-gradient(120deg,#43e97b 0%,#38f9d7 100%);
+  font-family:'Segoe UI',Arial,sans-serif;color:#1b336a;}
+  .login-bg {min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .login-card {
+    background:#fff;padding:40px 36px 34px 36px;border-radius:18px;box-shadow:0 8px 36px 0 #38f9d735;
+    width:380px;max-width:96vw;display:flex;flex-direction:column;gap:16px;position:relative;
   }
-  @keyframes gradientBG {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
+  .login-card h3 {text-align:center;color:#208cff;font-weight:700;margin-bottom:18px;letter-spacing:1px;}
+  .form-wrap {display:flex;flex-direction:column;gap:16px;}
+  label {font-size:1.04em;font-weight:500;margin-bottom:5px;margin-top:2px;}
+  .input-row {display:flex;flex-direction:column;gap:5px;}
+  input[type="text"],input[type="email"],input[type="password"] {
+    border-radius:8px;border:1.3px solid #b3d0ed;padding:10px 12px;font-size:1.08em;background:#f8faff;
+    transition:border .15s;outline:none;
   }
-  .container {
-    max-width: 1100px;
-    margin: 45px auto;
-    background: rgba(255,255,255,0.98);
-    border-radius: 18px;
-    box-shadow: 0 10px 48px 0 #1c50a322;
-    padding: 36px 30px 30px 30px;
+  input:focus {border-color:#4f8cff;background:#f4f8ff;box-shadow:0 1px 6px #38f9d722;}
+  button {
+    background:#4f8cff;border:none;color:#fff;font-weight:bold;font-size:1.14em;padding:13px 0;
+    border-radius:6px;margin:8px 0 0 0;box-shadow:0 2px 11px #38f9d712;cursor:pointer;transition:background .16s;
   }
-  h1,h2 {
-    text-align:center;
-    color:#1b336a;
-    letter-spacing:2px;
-    margin-bottom:0.2em;
+  button:hover {background:#2a75d8;}
+  .form-error {color:#db4437;font-size:.98em;text-align:center;margin-top:-6px;margin-bottom:-7px;}
+  .success-note {color:#43e97b;font-size:.98em;text-align:center;}
+  .card-switch {text-align:center;margin-top:16px;}
+  .card-switch span, .forgot-link, .toSigninLink {
+    color:#208cff;cursor:pointer;text-decoration:underline;font-size:1em;
   }
-  h2 {
-    color:#4f8cff;
-    font-size:1.2em;
-    margin-bottom:1.4em;
-    margin-top:0;
+  .forgot-link {margin-left:9px;}
+  .toSigninLink {margin-top:12px;display:block;}
+  #mainApp {display:none;padding:20px 15px;max-width:1100px;margin:0 auto;}
+  #signout_button {float:right;margin-right:18px;margin-top:7px;cursor:pointer;}
+  @media (max-width:480px) {
+    .login-bg{padding:3vw;}
+    .login-card{padding:26px 5vw;width:99vw;}
+    #mainApp{padding:10px 2vw;}
+    label{font-size:1em;}
   }
-  .row {
-    display:flex;
-    gap:15px;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-    position:relative;
-  }
-  input,select,textarea {
-    flex:1;
-    padding:10px;
-    border:1px solid #b3d0ed;
-    border-radius:5px;
-    background:#f6faff;
-    font-size:1em;
-    resize:vertical;
-  }
+  .radio-row {text-align:center;margin-bottom:28px;}
+  .radio-row label {font-size:1.16em;font-weight:500;}
+  .radio-row input[type="radio"] {margin:0 10px 0 18px;}
   .suggestions {
-    position:absolute;
-    left:0;right:0;top:44px;
-    background:#fff;
-    border:1px solid #b3d0ed;
-    z-index:99;
-    border-top:none;
-    max-height:200px;
-    overflow-y:auto;
+    position:absolute;left:0;right:0;top:44px;
+    background:#fff;border:1px solid #b3d0ed;z-index:99;
+    border-top:none;max-height:200px;overflow-y:auto;
   }
   .suggestion {
-    padding:9px 12px;
-    cursor:pointer;
-    border-bottom:1px solid #eef2fa;
+    padding:9px 12px;cursor:pointer;border-bottom:1px solid #eef2fa;
   }
-  .suggestion:last-child {
-    border-bottom:none;
-  }
-  .suggestion:hover {
-    background:#eaf8ff;
-  }
-  .item-table {
-    margin-top:25px;
-  }
+  .suggestion:last-child {border-bottom:none;}
+  .suggestion:hover {background:#eaf8ff;}
+  .item-table {margin-top:25px;}
   table {
-    width:100%;
-    border-collapse:collapse;
-    margin-top:6px;
+    width:100%;border-collapse:collapse;margin-top:6px;
   }
   th,td {
-    padding:10px 7px;
-    text-align:left;
-    vertical-align:middle;
+    padding:10px 7px;text-align:left;vertical-align:middle;
   }
   th {
-    background:#9ad3fb;
-    color:#1b336a;
+    background:#9ad3fb;color:#1b336a;
   }
   tr:nth-child(even) {
     background:#f4f9fe;
   }
   .editable,.editable-name-input {
-    background:#fff9db;
-    border:1px solid #ffb84c;
-    border-radius:4px;
-    padding:5px 6px;
-    font-family:inherit;
-    font-size:1em;
+    background:#fff9db;border:1px solid #ffb84c;border-radius:4px;padding:5px 6px;
+    font-family:inherit;font-size:1em;
   }
-  .editable-name-input {
-    width:90%;
-  }
+  .editable-name-input {width:90%;}
   .textarea-editable {
-    background:#fff9db;
-    border:1px solid #ffb84c;
-    border-radius:4px;
-    padding:6px;
-    min-height:65px;
-    font-size:0.95em;
-    font-family:Arial, sans-serif;
-    width:100%;
-    box-sizing:border-box;
-    resize:vertical;
+    background:#fff9db;border:1px solid #ffb84c;border-radius:4px;padding:6px;
+    min-height:65px;font-size:0.95em;font-family:Arial, sans-serif;
+    width:100%;box-sizing:border-box;resize:vertical;
   }
-  .save-btn, .download-btn, .delete-btn, .edit-name-btn, .save-name-btn {
-    cursor:pointer;
-    border:none;
-    border-radius:5px;
-    padding:6px 16px;
-    margin:6px 4px 6px 0;
-    font-weight:bold;
-    font-size:1em;
-    transition:background 0.18s;
+  .save-btn,.download-btn,.delete-btn,.edit-name-btn,.save-name-btn {
+    cursor:pointer;border:none;border-radius:5px;padding:6px 16px;margin:6px 4px 6px 0;
+    font-weight:bold;font-size:1em;transition:background 0.18s;
   }
-  .save-btn, .download-btn {
-    background:#43e97b;
-    color:#222;
-  }
-  .save-btn:hover, .download-btn:hover, .save-name-btn:hover, .edit-name-btn:hover {
+  .save-btn,.download-btn {background:#43e97b;color:#222;}
+  .save-btn:hover,.download-btn:hover,.save-name-btn:hover,.edit-name-btn:hover {
     background:#38f9d7;
   }
   .delete-btn {
-    background:#e35b5b;
-    color:#fff;
+    background:#e35b5b;color:#fff;
   }
   .delete-btn:hover {
     background:#c94b4b;
   }
   .history-title {
-    font-weight:bold;
-    margin-top:15px;
-    margin-bottom:8px;
+    font-weight:bold;margin-top:15px;margin-bottom:8px;
   }
   .history-table {
-    width:100%;
-    font-size:0.9em;
-    border-collapse:collapse;
-    margin-top:15px;
+    width:100%;font-size:0.9em;border-collapse:collapse;margin-top:15px;
   }
-  .history-table th, .history-table td {
-    border:1px solid #b3d0ed;
-    padding:8px 6px;
-    vertical-align:middle;
-    text-align:center;
+  .history-table th,.history-table td {
+    border:1px solid #b3d0ed;padding:8px 6px;vertical-align:middle;text-align:center;
   }
   .history-delete {
-    cursor:pointer;
-    border:none;
-    border-radius:4px;
-    padding:2px 6px;
-    font-weight:bold;
-    background:#e35b5b;
-    color:white;
+    cursor:pointer;border:none;border-radius:4px;padding:2px 6px;font-weight:bold;background:#e35b5b;color:white;
   }
   .history-delete:hover {
     background:#c94b4b;
   }
   .history-remark-edit {
-    width:90%;
-    max-width:220px;
-    height:40px;
-    padding:3px 5px;
-    resize:vertical;
-    font-family:Arial, sans-serif;
-    font-size:0.95em;
+    width:90%;max-width:220px;height:40px;padding:3px 5px;resize:vertical;font-family:Arial,sans-serif;font-size:0.95em;
   }
   .received {
-    color: #2d862d; /* light green */
-    font-weight: bold;
+    color:#2d862d;font-weight:bold;
   }
   .sent {
-    color: #cc4c4c; /* light red */
-    font-weight: bold;
-  }
-  @media (max-width: 600px) {
-    .container {
-      padding: 20px 15px 20px 15px;
-    }
-    .row {
-      flex-direction: column;
-    }
-    input, select, textarea {
-      flex: unset;
-      width: 100%;
-      margin-bottom: 12px;
-    }
-    .button-row {
-      text-align: center;
-    }
-    .save-btn, .download-btn, .delete-btn, .edit-name-btn, .save-name-btn {
-      width: 90%;
-      margin: 0 auto;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
+    color:#cc4c4c;font-weight:bold;
   }
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/shim.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-<div class="container">
+
+<!-- SINGLE Login container with signin/signup/forgot -->
+<div class="login-bg" id="loginBg">
+  <div class="login-card" id="authCard" style="display:flex;">
+    <h3>Sign In to E-Ledger</h3>
+    <form class="form-wrap" id="loginForm" autocomplete="off">
+      <div class="input-row"><label for="loginEmail">Email</label><input type="email" id="loginEmail" required autocomplete="username" placeholder="Enter your email" /></div>
+      <div class="input-row"><label for="loginPassword">Password</label><input type="password" id="loginPassword" required autocomplete="current-password" placeholder="Enter your password" /></div>
+      <div style="display:flex; justify-content:space-between; margin:0;">
+        <span class="forgot-link" id="forgotLink" tabindex="0">Forgot Password?</span>
+      </div>
+      <div class="form-error" id="loginError"></div>
+      <button type="submit" id="loginBtn">Sign In</button>
+    </form>
+    <div class="card-switch">Don't have an account? <span id="toSignup" tabindex="0">Sign Up</span></div>
+  </div>
+  <div class="login-card" id="signupCard" style="display:none; flex-direction: column;">
+    <h3>Create Your Account</h3>
+    <form class="form-wrap" id="signupForm" autocomplete="off">
+      <div class="input-row"><label for="signupEmail">Email</label><input type="email" id="signupEmail" required autocomplete="username" placeholder="Enter your email" /></div>
+      <div class="input-row"><label for="signupPassword">Password</label><input type="password" id="signupPassword" required autocomplete="new-password" placeholder="Password (min 8 chars, upper, lower, number, special)" /></div>
+      <div class="input-row"><label for="signupPassword2">Confirm Password</label><input type="password" id="signupPassword2" required autocomplete="new-password" placeholder="Re-enter password" /></div>
+      <div class="form-error" id="signupError"></div>
+      <button type="submit" id="signupBtn">Sign Up</button>
+    </form>
+    <div class="card-switch"><span id="toSignin" tabindex="0">Already have an account? Sign In</span></div>
+  </div>
+  <div class="login-card" id="forgotCard" style="display:none; flex-direction: column;">
+    <h3>Reset Your Password</h3>
+    <form class="form-wrap" id="forgotForm" autocomplete="off">
+      <div class="input-row"><label for="forgotEmail">Email</label><input type="email" id="forgotEmail" required placeholder="Registered email" /></div>
+      <div class="form-error" id="forgotError"></div>
+      <div class="success-note" id="forgotSuccess"></div>
+      <button type="submit" id="forgotBtn">Send New Password</button>
+    </form>
+    <div class="card-switch"><span id="toSignin2" tabindex="0">Back to Sign In</span></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="container" id="mainApp" style="display:none;">
   <h1>E-LEDGER KAKINADA</h1>
-  <h2>VOLUME-II</h2>
-  <div class="row">
-    <input type="text" id="searchBar" placeholder="Search stock item..." />
+  <h2>VOLUME-I & II <span id="userAccessMsg" style="float:right; font-size:.7em; color:#208cff"></span></h2>
+  <div class="radio-row">
+    <label><input type="radio" name="volume" value="1" id="vol1" checked> VOLUME-I</label>
+    <label><input type="radio" name="volume" value="2" id="vol2"> VOLUME-II</label>
+  </div>
+  <button id="signout_button">Sign Out</button>
+
+  <div class="row" style="position:relative;">
+    <input type="text" id="searchBar" placeholder="Search stock item..." autocomplete="off" />
     <div id="suggestions" class="suggestions" style="display:none;"></div>
     <select id="dropdown"><option value="">Select stock item...</option></select>
   </div>
   <div class="item-table" id="itemTable"></div>
-  <div class="button-row" style="margin-bottom: 25px;">
+  <div class="button-row">
     <button class="download-btn" id="downloadBtn">Download Excel File</button>
   </div>
 </div>
 
-<!-- Link to external JS file -->
-<script src="script.js"></script>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFkxn4lg27Nqi6uRyPTum4ujRuJ0qFw35qwlwBeI26LuVXzGK7BkQfnikRfMrNBts36A/exec';
+const SPREADSHEET_ID = '1trGV_sR93c7ksN1-0C4RlRQF2c-c9tHCJ_2yHi94ylY';
+const VOLUMES = {1:{ITEM:'Sheet1',HISTORY:'StockHistory'},2:{ITEM:'Sheet2',HISTORY:'StockHistory2'}};
+
+let currentVolume = 1, items = [], currentItem = null, userAccess = "User", sessionEmail = "";
+
+const loginBg = document.getElementById("loginBg");
+const authCard = document.getElementById("authCard");
+const signupCard = document.getElementById("signupCard");
+const forgotCard = document.getElementById("forgotCard");
+const userAccessMsg = document.getElementById("userAccessMsg");
+
+// Toggle login/signup/forgot visibility
+document.getElementById("toSignup").onclick = () => {
+  authCard.style.display = "none";
+  signupCard.style.display = "flex";
+  forgotCard.style.display = "none";
+};
+document.getElementById("toSignin").onclick = () => {
+  signupCard.style.display = "none";
+  authCard.style.display = "flex";
+  forgotCard.style.display = "none";
+};
+document.getElementById("forgotLink").onclick = () => {
+  signupCard.style.display = "none";
+  authCard.style.display = "none";
+  forgotCard.style.display = "flex";
+};
+document.getElementById("toSignin2").onclick = () => {
+  forgotCard.style.display = "none";
+  signupCard.style.display = "none";
+  authCard.style.display = "flex";
+};
+
+// Hash password with SHA-256
+async function sha256(str) {
+  const buf = new TextEncoder("utf-8").encode(str);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buf);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Validate password strength
+function validatePassword(pw) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(pw);
+}
+
+// Signup form submit
+document.getElementById("signupForm").onsubmit = async function (e) {
+  e.preventDefault();
+  const email = document.getElementById("signupEmail").value.trim();
+  const pw = document.getElementById("signupPassword").value;
+  const pw2 = document.getElementById("signupPassword2").value;
+  const err = document.getElementById("signupError");
+  err.style.color = "#db4437";
+  err.textContent = "";
+  if (!/^[^@]+@[^@.]+\.[a-z]+$/i.test(email)) {
+    err.textContent = "Please enter a valid email."; return;
+  }
+  if (pw !== pw2) {
+    err.textContent = "Passwords do not match."; return;
+  }
+  if (!validatePassword(pw)) {
+    err.textContent = "Password must contain uppercase, lowercase, number, special char and be 8+ chars."; return;
+  }
+  const passwordHash = await sha256(pw);
+  const resp = await fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({type: 'signup', email, passwordHash}),
+    headers: {"Content-Type": "application/json"}
+  });
+  const data = await resp.json();
+  if (data.status === "success") {
+    err.style.color = "#43e97b";
+    err.textContent = "Signup successful! Please sign in.";
+    setTimeout(() => {
+      authCard.style.display = "flex";
+      signupCard.style.display = "none";
+      err.textContent = "";
+      err.style.color = "#db4437";
+    }, 1500);
+  } else if (data.status === "exists") {
+    err.textContent = "User exists. Please sign in.";
+  } else {
+    err.textContent = data.message || "Signup failed. Please try again.";
+  }
+};
+
+// Login form submit
+document.getElementById("loginForm").onsubmit = async function (e) {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const pw = document.getElementById("loginPassword").value;
+  const err = document.getElementById("loginError");
+  err.textContent = "";
+  if (!/^[^@]+@[^@.]+\.[a-z]+$/i.test(email)) {
+    err.textContent = "Please enter a valid email."; return;
+  }
+  if (!pw) {
+    err.textContent = "Password is required."; return;
+  }
+  const passwordHash = await sha256(pw);
+  const resp = await fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({type: 'login', email, passwordHash}),
+    headers: {"Content-Type": "application/json"}
+  });
+  const data = await resp.json();
+  if (data.status === "success") {
+    userAccess = data.access || "User";
+    sessionEmail = email;
+    loginBg.style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
+    userAccessMsg.textContent = `Logged in as: ${sessionEmail} [${userAccess}]`;
+    err.textContent = "";
+    gapiLoaded();
+  } else {
+    err.textContent = data.message || "Invalid email or password.";
+  }
+};
+
+// Forgot password submit
+document.getElementById("forgotForm").onsubmit = async function(e) {
+  e.preventDefault();
+  const email = document.getElementById("forgotEmail").value.trim();
+  const info = document.getElementById("forgotSuccess");
+  const err = document.getElementById("forgotError");
+  info.textContent = err.textContent = "";
+  if (!/^[^@]+@[^@.]+\.[a-z]+$/i.test(email)) {
+    err.textContent = "Please enter your registered email."; return;
+  }
+  const resp = await fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({type: 'forgot', email}),
+    headers: {"Content-Type": "application/json"}
+  });
+  const data = await resp.json();
+  if (data.status === "sent") {
+    info.textContent = "Password reset email sent. Check your inbox.";
+  } else {
+    err.textContent = data.message || "Error sending reset email.";
+  }
+};
+
+// Volume switch handlers
+document.getElementById('vol1').onclick = () => {
+  if (currentVolume !== 1) {
+    currentVolume = 1; loadData();
+  }
+};
+document.getElementById('vol2').onclick = () => {
+  if (currentVolume !== 2) {
+    currentVolume = 2; loadData();
+  }
+};
+
+// Sign out handler
+document.getElementById('signout_button').onclick = () => location.reload();
+
+// Load Google Sheets API & client
+function gapiLoaded() {
+  gapi.load('client', initializeGapiClient);
+}
+
+async function initializeGapiClient() {
+  await gapi.client.init({
+    apiKey: 'AIzaSyCqK9TL0c3FMZA0Xyg16Ij0dKDskNsNGws',
+    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+  });
+  loadData();
+}
+
+// Load stock items
+async function loadData() {
+  await loadStockItems();
+  await loadStockHistory();
+  populateDropdown();
+  if (items.length) showItem(items[0]);
+  else itemTable.innerHTML = "No items found.";
+}
+
+async function loadStockItems() {
+  try {
+    const range = `${VOLUMES[currentVolume].ITEM}!A2:E`;
+    const response = await gapi.client.sheets.spreadsheets.values.get({spreadsheetId: SPREADSHEET_ID, range});
+    const rows = response.result.values || [];
+    items = rows.map((row, i) => ({
+      sno: Number(row[0]) || i + 1,
+      name: (row[1] || "").trim(),
+      stock: Number(row[2]) || 0,
+      page: row[3] || "",
+      notes: row[4] || "",
+      history: []
+    })).filter(i => i.name);
+  } catch (e) {
+    alert("Failed to load stock items: " + e.message);
+  }
+}
+
+async function loadStockHistory() {
+  try {
+    const range = `${VOLUMES[currentVolume].HISTORY}!A2:F`;
+    const response = await gapi.client.sheets.spreadsheets.values.get({spreadsheetId: SPREADSHEET_ID, range});
+    const rows = response.result.values || [];
+    const map = {};
+    rows.forEach(r => {
+      const [itemName, date, oldStock, newStock, receivedSent, remark] = r;
+      if (!itemName) return;
+      if (!map[itemName]) map[itemName] = [];
+      map[itemName].push({ date, old: Number(oldStock), new: Number(newStock), receivedSent, remark });
+    });
+    items.forEach(item => (item.history = map[item.name] || []));
+  } catch (e) {
+    alert("Failed to load stock history: " + e.message);
+  }
+}
+
+function populateDropdown() {
+  dropdown.innerHTML = '<option value="">Select stock item...</option>';
+  items.forEach(i => {
+    if (i.name) {
+      const opt = document.createElement("option");
+      opt.value = i.sno;
+      opt.textContent = i.name;
+      dropdown.appendChild(opt);
+    }
+  });
+}
+
+searchBar.addEventListener("input", () => {
+  const val = searchBar.value.toLowerCase().trim();
+  suggestionsDiv.innerHTML = "";
+  if (!val) {
+    suggestionsDiv.style.display = "none";
+    return;
+  }
+  const filtered = items.filter(i => i.name.toLowerCase().includes(val));
+  filtered.forEach(i => {
+    const div = document.createElement("div");
+    div.className = "suggestion";
+    div.textContent = `${i.name} (Stock: ${i.stock}, Pg: ${i.page})`;
+    div.onclick = () => {
+      showItem(i);
+      searchBar.value = i.name;
+      dropdown.value = i.sno;
+      suggestionsDiv.style.display = "none";
+    };
+    suggestionsDiv.appendChild(div);
+  });
+  suggestionsDiv.style.display = filtered.length ? "block" : "none";
+});
+
+document.addEventListener("click", e => {
+  if (!suggestionsDiv.contains(e.target) && e.target !== searchBar) {
+    suggestionsDiv.style.display = "none";
+  }
+});
+
+dropdown.addEventListener("change", () => {
+  const sno = parseInt(dropdown.value);
+  if (!sno) return;
+  const item = items.find(i => i.sno === sno);
+  if (item) {
+    showItem(item);
+    searchBar.value = item.name;
+  }
+});
+
+function renderHistoryTable(item) {
+  if (!item.history.length) return "<div>No stock change history.</div>";
+  let html =
+    '<div class="history-title">Stock Change History</div><table class="history-table"><thead><tr><th>#</th><th>Date & Time</th><th>Old Stock</th><th>New Stock</th><th>Received/Sent</th><th>Remarks</th>' +
+    (userAccess === "Admin" ? "<th>Actions</th>" : "") +
+    "</tr></thead><tbody>";
+  item.history.forEach((entry, i) => {
+    const diff = entry.new - entry.old;
+    const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
+    const diffClass = diff > 0 ? "received" : diff < 0 ? "sent" : "";
+    html +=
+      `<tr data-idx="${i}"><td>${i + 1}</td><td>${entry.date || ""}</td><td>${entry.old || ""}</td><td>${entry.new || ""}</td>` +
+      `<td class="${diffClass}"><strong>${sign}${Math.abs(diff)}</strong></td><td>` +
+      (userAccess === "Admin"
+        ? `<textarea class="history-remark-edit" data-idx="${i}" style="width:85%;height:40px;">${entry.remark || ""}</textarea><button class="history-remark-save" data-idx="${i}" style="margin-left: 5px;">Save</button>`
+        : `<div style="min-height:30px;text-align:left">${entry.remark || ""}</div>`) +
+      "</td>" +
+      (userAccess === "Admin"
+        ? `<td><button class="history-delete" data-idx="${i}" style="background:#e35b5b;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">Delete</button></td>`
+        : "") +
+      "</tr>";
+  });
+  html += "</tbody></table>";
+  return html;
+}
+
+function showItem(item) {
+  currentItem = item;
+  itemTable.innerHTML = `
+    <table>
+      <thead><tr><th>S.No.</th><th>Name</th><th>Stock</th><th>Page Number(s)</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>${item.sno}</td>
+          <td style="position: relative;">
+           <span id="nameDisplay">${item.name}</span>
+           ${
+             userAccess === "Admin"
+               ? `<input type="text" id="nameEdit" class="editable-name-input" value="${item.name}" style="display:none;"/>
+               <button id="nameEditBtn" title="Edit Name">✎</button>
+               <button id="nameSaveBtn" title="Save Name" style="display:none;">✓</button>`
+               : ""
+           }
+          </td>
+          <td>${
+            userAccess === "Admin"
+              ? `<input type="number" min="0" id="stockEdit" class="editable" value="${item.stock}"/>`
+              : `<span>${item.stock}</span>`
+          }</td>
+          <td>${
+            userAccess === "Admin"
+              ? `<input type="text" id="pageEdit" class="editable" value="${item.page}"/>`
+              : `<span>${item.page}</span>`
+          }</td>
+          <td>${
+            userAccess === "Admin"
+              ? `<button class="save-btn" id="itemSaveBtn">Save</button> <button class="delete-btn" id="itemDelBtn">Delete</button>`
+              : `<span style="font-size:.93em;color:#999;">View only</span>`
+          }</td>
+        </tr>
+        <tr><td colspan="5">
+         <label for="notesEdit" style="font-weight:bold;">Additional Notes:</label>
+         ${
+           userAccess === "Admin"
+             ? `<textarea id="notesEdit" class="textarea-editable" placeholder="Additional notes">${item.notes || ""}</textarea>`
+             : `<div style="font-size:.97em;padding:8px 0 0 0;">${item.notes || ""}</div>`
+         }
+        </td></tr>
+      </tbody>
+    </table>
+    <div class="history-container">${renderHistoryTable(item)}</div>
+  `;
+
+  if (userAccess === "Admin") {
+    const nameDisplay = document.getElementById("nameDisplay");
+    const nameEditInput = document.getElementById("nameEdit");
+    const nameEditBtn = document.getElementById("nameEditBtn");
+    const nameSaveBtn = document.getElementById("nameSaveBtn");
+
+    nameEditBtn.onclick = () => {
+      nameDisplay.style.display = "none";
+      nameEditInput.style.display = "inline-block";
+      nameEditBtn.style.display = "none";
+      nameSaveBtn.style.display = "inline-block";
+      nameEditInput.focus();
+    };
+
+    nameSaveBtn.onclick = async () => {
+      const newName = nameEditInput.value.trim();
+      if (newName) {
+        nameDisplay.textContent = newName;
+        currentItem.name = newName;
+        await updateItemField("name", newName);
+        populateDropdown();
+      }
+      nameDisplay.style.display = "inline";
+      nameEditInput.style.display = "none";
+      nameEditBtn.style.display = "inline-block";
+      nameSaveBtn.style.display = "none";
+    };
+
+    document.getElementById("itemSaveBtn").onclick = () => saveEdits(item.sno);
+    document.getElementById("itemDelBtn").onclick = () => {
+      if (confirm("Are you sure you want to delete this stock item?")) deleteItem(item.sno);
+    };
+
+    itemTable.querySelectorAll(".history-remark-save").forEach(button => {
+      button.onclick = async e => {
+        const idx = parseInt(e.target.getAttribute("data-idx"));
+        const textarea = itemTable.querySelector(`textarea.history-remark-edit[data-idx='${idx}']`);
+        if (textarea && currentItem.history && currentItem.history[idx]) {
+          currentItem.history[idx].remark = textarea.value.trim();
+          await saveHistoryToSheet(currentItem.name);
+          alert("Remark saved.");
+        }
+      };
+    });
+
+    itemTable.querySelectorAll(".history-delete").forEach(button => {
+      button.onclick = async e => {
+        const idx = parseInt(e.target.getAttribute("data-idx"));
+        if (confirm("Are you sure you want to delete this stock change history?")) {
+          currentItem.history.splice(idx, 1);
+          await saveHistoryToSheet(currentItem.name);
+          alert("History entry deleted.");
+          showItem(currentItem);
+        }
+      };
+    });
+  }
+}
+
+// Implement supporting functions for inventory (updateItemField, saveEdits, saveItemToSheet, appendHistoryRow, saveHistoryToSheet, deleteItem, downloadExcel)
+
+function updateItemField(field, value) {
+  if (!currentItem) return;
+  currentItem[field] = value;
+  return saveItemToSheet(currentItem);
+}
+
+async function saveEdits(sno) {
+  const stockInput = document.getElementById("stockEdit");
+  const pageInput = document.getElementById("pageEdit");
+  const notesInput = document.getElementById("notesEdit");
+  const stockVal = parseInt(stockInput.value, 10);
+  const pageVal = pageInput.value.trim();
+  const notesVal = notesInput.value.trim();
+
+  if (isNaN(stockVal) || stockVal < 0) return alert("Stock must be a non-negative integer.");
+  if (!/^(\d+(-\d+)?)(,(\d+(-\d+)?))*$/.test(pageVal.replace(/\s/g, ""))) return alert("Invalid page numbers. Example: 1,3-5,8");
+
+  const idx = items.findIndex(i => i.sno === sno);
+  if (idx === -1) return alert("Item not found.");
+
+  const item = items[idx];
+  if (item.stock !== stockVal) {
+    const now = new Date().toISOString();
+    item.history.push({ date: now, old: item.stock, new: stockVal, receivedSent: (stockVal > item.stock) ? `+${stockVal - item.stock}` : `-${item.stock - stockVal}`, remark: "" });
+    item.stock = stockVal;
+    await appendHistoryRow(item.name, now, item.history[item.history.length - 1]);
+  }
+  item.page = pageVal;
+  item.notes = notesVal;
+  items[idx] = item;
+  await saveItemToSheet(item);
+  alert(`Saved changes for "${item.name}".`);
+  populateDropdown();
+  showItem(item);
+}
+
+async function appendHistoryRow(itemName, timestamp, historyEntry) {
+  await gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `${VOLUMES[currentVolume].HISTORY}!A:F`,
+    valueInputOption: "RAW",
+    insertDataOption: "INSERT_ROWS",
+    resource: {
+      values: [[itemName, timestamp, historyEntry.old, historyEntry.new, historyEntry.receivedSent, historyEntry.remark || ""]],
+    },
+  });
+}
+
+async function saveHistoryToSheet(itemName) {
+  const historyRows = [];
+  items.forEach(item => {
+    if (item.name === itemName && item.history) {
+      item.history.forEach(h => {
+        historyRows.push([item.name, h.date, h.old, h.new, h.receivedSent, h.remark || ""]);
+      });
+    }
+  });
+  await gapi.client.sheets.spreadsheets.values.clear({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `${VOLUMES[currentVolume].HISTORY}!A2:F`,
+  });
+  if (historyRows.length > 0) {
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${VOLUMES[currentVolume].HISTORY}!A2:F`,
+      valueInputOption: "RAW",
+      resource: { values: historyRows },
+    });
+  }
+}
+
+async function saveItemToSheet(item) {
+  const idx = items.findIndex(i => i.sno === item.sno);
+  if (idx === -1) return;
+  const range = `${VOLUMES[currentVolume].ITEM}!A${idx + 2}:E${idx + 2}`;
+  await gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: SPREADSHEET_ID,
+    range,
+    valueInputOption: "RAW",
+    resource: { values: [[item.sno, item.name, item.stock, item.page, item.notes]] },
+  });
+  items[idx] = item;
+}
+
+async function deleteItem(sno) {
+  if (!confirm("Are you sure to delete this stock item?")) return;
+  const idx = items.findIndex(i => i.sno === sno);
+  if (idx === -1) return alert("Item not found.");
+  items.splice(idx, 1);
+  alert("Deleted item locally. Please remove its row in Google Sheets manually.");
+  populateDropdown();
+  itemTable.innerHTML = "";
+  searchBar.value = "";
+}
+
+function downloadExcel() {
+  const XLSX = window.XLSX;
+  const mainHeaders = ["S.No.", "Name of Item", "Stock", "Page Number(s)", "Notes"];
+  const historyHeaders = ["Date & Time", "Old Stock", "New Stock", "Received/Sent", "Remarks"];
+  let data = [[...mainHeaders, "Stock Change History"]];
+  data.push(["", "", "", "", "", ...historyHeaders]);
+
+  items.forEach(item => {
+    const history = item.history || [];
+    if (history.length === 0) {
+      data.push([item.sno, item.name, item.stock, item.page, item.notes, "", "", "", "", ""]);
+    } else {
+      const h0 = history[0];
+      const diff0 = h0.new - h0.old;
+      const sign0 = diff0 > 0 ? "+" : diff0 < 0 ? "-" : "";
+      data.push([
+        item.sno,
+        item.name,
+        item.stock,
+        item.page,
+        item.notes,
+        h0.date || "",
+        h0.old,
+        h0.new,
+        `${sign0}${Math.abs(diff0)}`,
+        h0.remark || "",
+      ]);
+      for (let i = 1; i < history.length; i++) {
+        const h = history[i];
+        const diff = h.new - h.old;
+        const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
+        data.push(["", "", "", "", "", h.date || "", h.old, h.new, `${sign}${Math.abs(diff)}`, h.remark || ""]);
+      }
+    }
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws["!merges"] = ws["!merges"] || [];
+  ws["!merges"].push({ s: { r: 0, c: 5 }, e: { r: 0, c: 9 } });
+  ws["!cols"] = [
+    { wch: 6 }, { wch: 30 }, { wch: 10 }, { wch: 15 }, { wch: 30 },
+    { wch: 20 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 30 }
+  ];
+
+  Object.entries(ws).forEach(([addr, cell]) => {
+    if (
+      ["F", "G", "H", "I", "J"].includes(addr.charAt(0)) &&
+      !["F1", "G1", "H1", "I1", "J1", "F2", "G2", "H2", "I2", "J2"].includes(addr)
+    ) {
+      if (!cell.s) cell.s = {};
+      cell.s.alignment = { wrapText: true, vertical: "top" };
+    }
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Stock Data");
+  XLSX.writeFile(wb, "e-ledger-kakinada-stock.xlsx");
+}
+
+downloadBtn.addEventListener("click", downloadExcel);
+</script>
+
 </body>
 </html>
